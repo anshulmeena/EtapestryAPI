@@ -46,8 +46,38 @@ class EtapestryAPI
 		$this->loginId = ($loginId ? $loginId : (defined('ETAPESTRYAPI_LOGIN_ID') ? ETAPESTRYAPI_LOGIN_ID : ""));
 		$this->password = ($password ? $password : (defined('ETAPESTRYAPI_PASSWORD') ? ETAPESTRYAPI_PASSWORD : ""));
 		$this->endPoint = ($endPoint ? $endPoint : (defined('ETAPESTRYAPI_ENDPOINT') ? ETAPESTRYAPI_ENDPOINT : "https://sna.etapestry.com/v2messaging/service?WSDL"));
-		
 	}
 
-	
+	/**
+	 * Method to determine if a NuSoap fault or error occurred.
+	 * If so, output any relevant info and stop the code from executing.
+	 * 
+	 * @param object $nsc NuSoap client
+	 */
+	public function checkFaultOrError($nsc)
+	{	
+		try 
+		{
+			if ($nsc->fault || $nsc->getError())
+			{
+			    if (!$nsc->fault)
+			    {
+			      $message = $nsc->getError();
+			    }
+			    else
+			    {
+			      $code = $nsc->faultcode;
+			      $message = $nsc->faultstring;
+			    }
+				
+			    throw new EtapestryAPIException($message, $code);
+			 }
+		 }
+		 catch (EtapestryAPIException $e) 
+		 {
+		 	echo $e->errorMessage();
+		 	exit;
+		 }
+	}
+		
 }
