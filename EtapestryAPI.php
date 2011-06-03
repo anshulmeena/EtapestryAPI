@@ -23,16 +23,16 @@ class EtapestryAPIException extends Exception
 class EtapestryAPI
 {
 	/**
+     * NuSOAP client object
+     */
+	public $nsc;
+	
+	/**
      * EtapestryAPI login details and intial endpoint.
      */
 	private $loginId;
 	private $password;
-	private $endPoint;
-	
-	/**
-     *  nusoap_client
-     */
-	public $nsc;
+	private $endpoint;
 	
 	/**
 	 * Constructor
@@ -45,7 +45,54 @@ class EtapestryAPI
 	{
 		$this->loginId = ($loginId ? $loginId : (defined('ETAPESTRYAPI_LOGIN_ID') ? ETAPESTRYAPI_LOGIN_ID : ""));
 		$this->password = ($password ? $password : (defined('ETAPESTRYAPI_PASSWORD') ? ETAPESTRYAPI_PASSWORD : ""));
-		$this->endPoint = ($endPoint ? $endPoint : (defined('ETAPESTRYAPI_ENDPOINT') ? ETAPESTRYAPI_ENDPOINT : "https://sna.etapestry.com/v2messaging/service?WSDL"));
+		$this->endpoint = ($endpoint ? $endpoint : (defined('ETAPESTRYAPI_ENDPOINT') ? ETAPESTRYAPI_ENDPOINT : "https://sna.etapestry.com/v2messaging/service?WSDL"));
+		
+		$this->createNuSOAPClient();
+	}
+	
+	/**
+	 * Instantiate NuSOAP client at specified endpoint
+	 * 
+	 * @param string $endpoint
+	 */
+	public function createNuSOAPClient () 
+	{
+		// Instantiate nusoap_client
+		$this->nsc = new nusoap_client($this->endpoint, true);
+
+		// Did an error occur?
+		$this->checkFaultOrError($this->nsc);	
+	}
+	
+	/**
+	 * Instantiate a nusoap_client instance and call login method
+	 */
+	public function login()
+	{
+		// Invoke login method
+		$newEndpoint = $this->nusoapCall("login", array($this->loginId, $this->password));
+
+		// Determine if the login method returned a value...this will occur
+		// when the database you are trying to access is located at a different
+		// environment that can only be accessed using the provided endpoint
+		if ($newEndpoint != "")
+		{
+			$this->endPoint = $newEndpoint;
+			$this->createNuSOAPClient();
+
+			// Invoke login method
+			$this->nsc->nusoapCall("login", array($loginId, $password));
+		}
+	}
+	
+	/**
+	 * Stops an eTapestry API session by calling the logout
+	 * method given a nusoap_client instance.
+	 */
+	public function logout()
+	{
+		// Invoke logout method
+		$this->nsc->nusoapCall("logout");
 	}
 
 	/**
@@ -69,15 +116,29 @@ class EtapestryAPI
 			      $code = $nsc->faultcode;
 			      $message = $nsc->faultstring;
 			    }
-				
+
 			    throw new EtapestryAPIException($message, $code);
-			 }
-		 }
-		 catch (EtapestryAPIException $e) 
-		 {
-		 	echo $e->errorMessage();
-		 	exit;
-		 }
+			}
+		}
+		catch (EtapestryAPIException $e)
+		{
+			echo $e->errorMessage();
+			exit;
+		}
+	}
+
+	/**
+	 * Performs nusoap_client call and checks for faults/errors
+	 *
+	 * @param string $operation
+	 * @param array $params
+	 */
+	private function nusoapCall ($operation, $params = array()) 
+	{
+		$result = $this->nsc->call($operation,$params);
+		$this->checkFaultOrError($this->nsc);
+		
+		return $result;
 	}
 		
 }
