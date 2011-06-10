@@ -6,7 +6,7 @@
 /**
  * Enter your eTapestry API account credentials to run tests
  */
-defined('ETAPESTRYAPI_LOGIN_ID',"");
+define('ETAPESTRYAPI_LOGIN_ID',"");
 define("ETAPESTRYAPI_PASSWORD", "");
 define("ETAPESTRYAPI_ENDPOINT", "");
 
