@@ -8,7 +8,8 @@
  */
 define('ETAPESTRYAPI_LOGIN_ID',"");
 define("ETAPESTRYAPI_PASSWORD", "");
-define("ETAPESTRYAPI_ENDPOINT", "");
+//Uncomment the line below if you wish to specify an endpoint
+//define("ETAPESTRYAPI_ENDPOINT", "");
 
 require_once dirname(dirname(__FILE__)) . '/EtapestryAPI.php';
 require_once 'PHPUnit/Autoload.php';
