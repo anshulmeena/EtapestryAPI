@@ -126,8 +126,7 @@ class EtapestryAPI
 		}
 		catch (EtapestryAPIException $e)
 		{
-			echo "<hr>ERROR CODE:". $e->getCode() .
-					"<br />" . $e->getMessage();
+			echo $e->getMessage();
 			
 			return true;
 		}
