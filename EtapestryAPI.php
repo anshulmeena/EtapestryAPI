@@ -70,19 +70,21 @@ class EtapestryAPI
 	public function login()
 	{
 		// Invoke login method
-		$newEndpoint = $this->nusoapCall("login", array($this->loginId, $this->password));
+		$result = $this->nusoapCall("login", array($this->loginId, $this->password));
 
 		// Determine if the login method returned a value...this will occur
 		// when the database you are trying to access is located at a different
 		// environment that can only be accessed using the provided endpoint
-		if ($newEndpoint != "")
+		if ($result != "")
 		{
-			$this->endPoint = $newEndpoint;
+			$this->endPoint = $result;
 			$this->createNuSOAPClient();
 
 			// Invoke login method
-			$this->nsc->nusoapCall("login", array($loginId, $password));
+			$result = $this->nsc->nusoapCall("login", array($loginId, $password));
 		}
+		
+		return $result;
 	}
 	
 	/**
@@ -92,7 +94,9 @@ class EtapestryAPI
 	public function logout()
 	{
 		// Invoke logout method
-		$this->nsc->nusoapCall("logout");
+		$result = $this->nsc->nusoapCall("logout");
+		
+		return $result;
 	}
 
 	/**
@@ -101,7 +105,7 @@ class EtapestryAPI
 	 * 
 	 * @param object $nsc NuSoap client
 	 */
-	public function checkFaultOrError($nsc)
+	public function hasFaultOrError($nsc)
 	{	
 		try 
 		{
@@ -123,8 +127,10 @@ class EtapestryAPI
 		catch (EtapestryAPIException $e)
 		{
 			echo $e->errorMessage();
-			exit;
+			return true;
 		}
+		
+		return false;
 	}
 
 	/**
@@ -136,7 +142,9 @@ class EtapestryAPI
 	private function nusoapCall ($operation, $params = array()) 
 	{
 		$result = $this->nsc->call($operation,$params);
-		$this->checkFaultOrError($this->nsc);
+		if ($this->hasFaultOrError($this->nsc)) {
+			return false;
+		}
 		
 		return $result;
 	}
