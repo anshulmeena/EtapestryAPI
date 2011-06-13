@@ -61,7 +61,7 @@ class EtapestryAPI
 		$this->nsc = new nusoap_client($this->endpoint, true);
 
 		// Did an error occur?
-		$this->checkFaultOrError($this->nsc);	
+		$this->hasFaultOrError($this->nsc);	
 	}
 	
 	/**
@@ -126,7 +126,8 @@ class EtapestryAPI
 		}
 		catch (EtapestryAPIException $e)
 		{
-			echo $e->errorMessage();
+			echo $e->getMessage();
+			
 			return true;
 		}
 		

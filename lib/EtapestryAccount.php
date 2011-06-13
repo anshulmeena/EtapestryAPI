@@ -18,7 +18,7 @@ class EtapestryAccount extends EtapestryAPI
 	 */
 	public function __construct($loginId = false, $password = false, $endpoint = false)
 	{
-		parent::_construct($loginId, $password, $endpoint);
+		parent::__construct($loginId, $password, $endpoint);
 	}
 	
 	
