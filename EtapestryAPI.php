@@ -81,7 +81,7 @@ class EtapestryAPI
 			$this->createNuSOAPClient();
 
 			// Invoke login method
-			$result = $this->nsc->nusoapCall("login", array($loginId, $password));
+			$result = $this->nusoapCall("login", array($loginId, $password));
 		}
 		
 		return $result;
@@ -94,7 +94,7 @@ class EtapestryAPI
 	public function logout()
 	{
 		// Invoke logout method
-		$result = $this->nsc->nusoapCall("logout");
+		$result = $this->nusoapCall("logout");
 		
 		return $result;
 	}
