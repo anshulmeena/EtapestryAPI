@@ -28,11 +28,19 @@ class EtapestryAPI
 	public $nsc;
 	
 	/**
+	 * Number of times to retry if connection to eTapestry fails
+	 */
+	private $retryLimit = 5;
+	
+	/**
      * EtapestryAPI login details and intial endpoint.
      */
 	private $loginId;
 	private $password;
 	private $endpoint;
+	
+	private $error;
+	
 	
 	/**
 	 * Constructor
@@ -54,14 +62,19 @@ class EtapestryAPI
 	 * Instantiate NuSOAP client at specified endpoint
 	 * 
 	 * @param string $endpoint
+	 * @return boolean true if no fault or error occurred
 	 */
-	public function createNuSOAPClient () 
+	public function createNuSOAPClient ($retry = 0) 
 	{
 		// Instantiate nusoap_client
 		$this->nsc = new nusoap_client($this->endpoint, true);
 
 		// Did an error occur?
-		$this->hasFaultOrError($this->nsc);	
+		if ($this->hasFaultOrError($this->nsc)) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -105,8 +118,10 @@ class EtapestryAPI
 	 * 
 	 * @param object $nsc NuSoap client
 	 */
-	public function hasFaultOrError($nsc)
+	public function hasFaultOrError($nsc, $showErrors = TRUE)
 	{	
+		$this->error = NULL;	
+	
 		try 
 		{
 			if ($nsc->fault || $nsc->getError())
@@ -126,7 +141,10 @@ class EtapestryAPI
 		}
 		catch (EtapestryAPIException $e)
 		{
-			echo $e->getMessage();
+			$this->error = $e->getMessage();
+			if ($showErrors) {
+				echo $this->error."\n";
+			}
 			
 			return true;
 		}
@@ -142,12 +160,43 @@ class EtapestryAPI
 	 */
 	public function nusoapCall ($operation, $params = array()) 
 	{
-		$result = $this->nsc->call($operation,$params);
-		if ($this->hasFaultOrError($this->nsc)) {
+		$response = $this->nsc->call($operation,$params);
+		
+		if ($this->hasFaultOrError($this->nsc, FALSE) && stristr($this->error, "wsdl error")) {
+			// Retry a call if it has failed to reach api service
+			$response = $this->retryCall($operation, $params);
+			if ($response === FALSE) {
+				echo $this->error;
+				return false;
+			}
+		}
+		else if ($this->hasFaultOrError($this->nsc)) {
 			return false;
 		}
 		
-		return $result;
+		return $response;
+	}
+	
+	/**
+	 * Retry a call until retry limit is reached
+	 *
+	 * @param string $operation
+	 * @param array $params
+	 */
+	private function retryCall ($operation, $params = array()) 
+	{	
+		$response = false;
+		
+		for ($try=0; $try<$this->retryLimit; $try++) {
+			sleep(5);
+			$this->createNuSOAPClient();
+			$response = $this->nsc->call($operation,$params);
+			if (!$this->hasFaultOrError($this->nsc, FALSE)) {
+				break;
+			}
+		}
+		
+		return $response;
 	}
 	
 }
