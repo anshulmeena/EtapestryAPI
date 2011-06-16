@@ -83,21 +83,21 @@ class EtapestryAPI
 	public function login()
 	{
 		// Invoke login method
-		$result = $this->nusoapCall("login", array($this->loginId, $this->password));
+		$response = $this->nusoapCall("login", array($this->loginId, $this->password));
 
 		// Determine if the login method returned a value...this will occur
 		// when the database you are trying to access is located at a different
 		// environment that can only be accessed using the provided endpoint
-		if ($result != "")
+		if ($response != "")
 		{
-			$this->endPoint = $result;
+			$this->endPoint = $response;
 			$this->createNuSOAPClient();
 
 			// Invoke login method
-			$result = $this->nusoapCall("login", array($loginId, $password));
+			$response = $this->nusoapCall("login", array($loginId, $password));
 		}
 		
-		return $result;
+		return $response;
 	}
 	
 	/**
@@ -107,9 +107,9 @@ class EtapestryAPI
 	public function logout()
 	{
 		// Invoke logout method
-		$result = $this->nusoapCall("logout");
+		$response = $this->nusoapCall("logout");
 		
-		return $result;
+		return $response;
 	}
 
 	/**
