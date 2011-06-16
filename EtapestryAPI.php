@@ -120,8 +120,8 @@ class EtapestryAPI
 			      $code = $nsc->faultcode;
 			      $message = $nsc->faultstring;
 			    }
-
-			    throw new EtapestryAPIException($message, $code);
+				
+			    throw new EtapestryAPIException($message);
 			}
 		}
 		catch (EtapestryAPIException $e)
@@ -140,7 +140,7 @@ class EtapestryAPI
 	 * @param string $operation
 	 * @param array $params
 	 */
-	private function nusoapCall ($operation, $params = array()) 
+	public function nusoapCall ($operation, $params = array()) 
 	{
 		$result = $this->nsc->call($operation,$params);
 		if ($this->hasFaultOrError($this->nsc)) {
@@ -149,5 +149,5 @@ class EtapestryAPI
 		
 		return $result;
 	}
-		
+	
 }
