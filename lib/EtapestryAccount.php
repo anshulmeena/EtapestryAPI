@@ -59,21 +59,41 @@ class EtapestryAccount extends EtapestryAPI
 	}
 	
 	/**
-	* checking for duplicate account (can be multiple) ??
+	* Check for single duplicate account
 	*
-	* @param array $array
-	* @return array for multiple accounts.
+	* @return array account information of duplicate account or null
 	* @access public
 	*/
 	public function getDuplicateAccount()
-	{	// Invoke getDuplicateAccounts method
+	{	// Invoke getDuplicateAccount method
 		$response = parent::nusoapCall("getDuplicateAccount", array($this->account));
+		
 		return $response;
 	}	
 	
+	/**
+	* Check for multiple duplicate accounts
+	*
+	* @return array of multiple duplicate accounts or null
+	* @access public
+	*/
+	public function getDuplicateAccounts()
+	{	// Invoke getDuplicateAccounts method
+		$response = parent::nusoapCall("getDuplicateAccounts", array($this->account));
+		
+		return $response;
+	}	
+	
+	/**
+	 * Add an eTapestry account
+	 * 
+	 * @return string the unique database ref of the newly created account
+	 */
 	public function addAccount()
 	{
 		$response = parent::nusoapCall("addAccount", array($this->account, false));
+		
+		return $response;
 	}
 
 }
