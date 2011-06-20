@@ -45,14 +45,10 @@ class EtapestryAPI
 	/**
 	 * Constructor
 	 * 
-	 * @param string $loginId Login ID
-	 * @param string $password Password
 	 * @param string $endpoint URL of eTapestry Service
 	 */
-	public function __construct($loginId = false, $password = false, $endpoint = false)
+	public function __construct($endpoint = false)
 	{
-		$this->loginId = ($loginId ? $loginId : (defined('ETAPESTRYAPI_LOGIN_ID') ? ETAPESTRYAPI_LOGIN_ID : ""));
-		$this->password = ($password ? $password : (defined('ETAPESTRYAPI_PASSWORD') ? ETAPESTRYAPI_PASSWORD : ""));
 		$this->endpoint = ($endpoint ? $endpoint : (defined('ETAPESTRYAPI_ENDPOINT') ? ETAPESTRYAPI_ENDPOINT : "https://sna.etapestry.com/v2messaging/service?WSDL"));
 		
 		$this->createNuSOAPClient();
@@ -79,9 +75,15 @@ class EtapestryAPI
 	
 	/**
 	 * Instantiate a nusoap_client instance and call login method
+	 * 
+	 * @param string $loginId Login ID
+	 * @param string $password Password
 	 */
-	public function login()
+	public function login($loginId = false, $password = false)
 	{
+		$this->loginId = ($loginId ? $loginId : (defined('ETAPESTRYAPI_LOGIN_ID') ? ETAPESTRYAPI_LOGIN_ID : ""));
+		$this->password = ($password ? $password : (defined('ETAPESTRYAPI_PASSWORD') ? ETAPESTRYAPI_PASSWORD : ""));
+		
 		// Invoke login method
 		$response = $this->nusoapCall("login", array($this->loginId, $this->password));
 

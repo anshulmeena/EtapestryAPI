@@ -12,13 +12,11 @@ class EtapestryAccount extends EtapestryAPI
 	/**
 	 * Run parent constructor
 	 * 
-	 * @param string $loginId Login ID
-	 * @param string $password Password
 	 * @param string $endpoint URL of eTapestry Service
 	 */
-	public function __construct($loginId = false, $password = false, $endpoint = false)
+	public function __construct($endpoint = false)
 	{
-		parent::__construct($loginId, $password, $endpoint);
+		parent::__construct($endpoint);
 	}
 	
 	
