@@ -126,6 +126,8 @@ class EtapestryAccount extends EtapestryAPI
 		$update_account = array_merge($originalAccount,$this->account);
 		
 		$response = parent::nusoapCall("updateAccount", array($update_account, false));
+		
+		return $response;
 	}
 
 }
