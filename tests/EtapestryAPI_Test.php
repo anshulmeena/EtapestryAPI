@@ -75,5 +75,20 @@ class EtapestryAPI_Test extends PHPUnit_Framework_TestCase
        
        $account->logout();
     }
-    
+
+    //testUpdateAccount method
+    public function testUpdateAccount()
+    {
+       $account = new EtapestryAccount();
+       $account->login();
+       //set values 
+       $account->setAccount('name','update test');
+       
+       //unkown ??
+       $response = $account->updateAccount($account);
+       $this->assertTrue($response != NULL);
+       $account->logout();
+    }
+   
+
 }

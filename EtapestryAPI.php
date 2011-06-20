@@ -179,6 +179,7 @@ class EtapestryAPI
 	
 	/**
 	 * Retry a call until retry limit is reached
+	 * limit the error display to 1 from total retry.
 	 *
 	 * @param string $operation
 	 * @param array $params

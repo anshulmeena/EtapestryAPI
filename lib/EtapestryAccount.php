@@ -65,7 +65,8 @@ class EtapestryAccount extends EtapestryAPI
 	* @access public
 	*/
 	public function getDuplicateAccount()
-	{	// Invoke getDuplicateAccount method
+	{	
+		// Invoke getDuplicateAccount method
 		$response = parent::nusoapCall("getDuplicateAccount", array($this->account));
 		
 		return $response;
@@ -87,7 +88,8 @@ class EtapestryAccount extends EtapestryAPI
 	/**
 	 * Add an eTapestry account
 	 * 
-	 * @return string the unique database ref of the newly created account
+	 * @return string the unique database ref of the newly created account 
+	 * @access public
 	 */
 	public function addAccount()
 	{
@@ -95,7 +97,7 @@ class EtapestryAccount extends EtapestryAPI
 		
 		return $response;
 	}
-	
+
 	/**
 	 * Will add defined values to an existing account
 	 * 
@@ -106,5 +108,24 @@ class EtapestryAccount extends EtapestryAPI
 	{
 		parent::nusoapCall("applyDefinedValues", array($refid, $definedValues, false));
 	} 
+	
+	/**
+	* Update acount method
+	* Uses getAccount method with database refrence value to get account array from etapestry
+	*
+	* @param  array $account updated details
+	* @return String unique database ref 
+	* @access public
+	*/
+	public function updateAccount($refid)
+	{	
+		//Get account array from eTapestry, 
+		$originalAccount = parent::nusoapCall("getAccount", array($refid));
+
+		//update $account array with new values
+		$update_account = array_merge($originalAccount,$this->account);
+		
+		$response = parent::nusoapCall("updateAccount", array($update_account, false));
+	}
 
 }
