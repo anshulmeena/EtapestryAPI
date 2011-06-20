@@ -95,5 +95,16 @@ class EtapestryAccount extends EtapestryAPI
 		
 		return $response;
 	}
+	
+	/**
+	 * Will add defined values to an existing account
+	 * 
+	 * @param string $refid
+	 * @param array $definedValues
+	 */
+	public function applyDefinedValues ($refid, $definedValues) 
+	{
+		parent::nusoapCall("applyDefinedValues", array($refid, $definedValues, false));
+	} 
 
 }
