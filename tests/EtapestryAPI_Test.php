@@ -37,6 +37,8 @@ class EtapestryAPI_Test extends PHPUnit_Framework_TestCase
        $account->logout();
     }
     
+    // Uncommenting will add an account to your eTapestry database
+    /*
     public function testAddAccount()
     {
        $account = new EtapestryAccount();
@@ -75,20 +77,22 @@ class EtapestryAPI_Test extends PHPUnit_Framework_TestCase
        
        $account->logout();
     }
-
+    
     //testUpdateAccount method
     public function testUpdateAccount()
     {
        $account = new EtapestryAccount();
        $account->login();
-       //set values 
-       $account->setAccount('name','update test');
        
-       //unkown ??
-       $response = $account->updateAccount($account);
-       $this->assertTrue($response != NULL);
+       //set new values 
+       $account->setAccount('name','Update Test');
+       
+       // Use pre-created test account
+       $refid = "INPUT_DATABASE_REF";
+       $response = $account->updateAccount($refid);
+       $this->assertNotNull($response);
        $account->logout();
     }
-   
+   */
 
 }
